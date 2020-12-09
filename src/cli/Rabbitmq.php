@@ -48,10 +48,10 @@ class Rabbitmq implements iQueue
         );
 
         $filedata = file_get_contents(__DIR__ . "/../../" . $data);
-        $data = array_merge(compact('data', $filedata), compact('template', $template));
+        $msgdata = array_merge(compact('filedata', $filedata), compact('template', $template));
 
         $msg = new AMQPMessage(
-            json_encode($data),
+            json_encode($msgdata),
             ['delivery_mode' => 2]  // сообщение постоянное
         );
 
@@ -61,7 +61,7 @@ class Rabbitmq implements iQueue
             'invoice_queue'
         );
 
-       Log::getLog()->info("Message No. {$data} send to Queue");
+        Log::getLog()->info("Message No. {$data} send to Queue");
         $channel->close();
         Rabbitmq::getConnection()->close();
     }
@@ -71,14 +71,15 @@ class Rabbitmq implements iQueue
      */
     public function process(AMQPMessage $msg): void
     {
-        $message = 'Received message No. ' . $msg->body;
+        $message = 'Received message';
         Log::getLog()->info($message);
         echo "-----\n";
         echo $message . "\n";
 
         GeneratePdf::generatePdf($msg->body);
         SendEmail::sendEmail();
-        $invoiceNo = (json_decode((json_decode($msg->body, true))['data'], true))['invoiceNo'];
+        $assocArrayFromFileData = (json_decode($msg->body, true))['filedata'];
+        $invoiceNo = (json_decode($assocArrayFromFileData, true))['invoiceNo'];
         echo "Message No. " . $invoiceNo . " processed.\n";
         $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
     }

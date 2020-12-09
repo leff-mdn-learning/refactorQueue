@@ -1,11 +1,10 @@
 <?php
 
 
-namespace AYakovlev\cli\Sender;
+namespace AYakovlev\cli;
 
 
-use AYakovlev\cli\AbstractCommand;
-use AYakovlev\cli\Rabbitmq;
+use AYakovlev\cli\Sender\WorkerSender;
 
 class Send extends AbstractCommand
 {
@@ -24,8 +23,6 @@ class Send extends AbstractCommand
 
     public function execute()
     {
-        var_dump($this->getParam('d'));
-        var_dump($this->getParam('t'));
         $this->sender->sendMessageToQueue($this->getParam('d'), $this->getParam('t'));
     }
 
