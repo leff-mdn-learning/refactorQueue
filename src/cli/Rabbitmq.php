@@ -74,7 +74,7 @@ class Rabbitmq implements iQueue
         $assocArrayFromFileData = json_decode($msg->body, true);
         $invoice = json_decode($assocArrayFromFileData['filedata'], true);
 
-        $message = "Received message for invoice No.{$invoice['invoice_no']}";
+        $message = " [*] Received message for invoice No.{$invoice['invoice_no']}";
         Log::getLog()->info($message);
         echo "-----\n";
         echo $message . "\n";
