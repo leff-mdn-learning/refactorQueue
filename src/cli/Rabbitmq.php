@@ -71,16 +71,18 @@ class Rabbitmq implements iQueue
      */
     public function process(AMQPMessage $msg): void
     {
-        $message = 'Received message';
+        $assocArrayFromFileData = json_decode($msg->body, true);
+        $invoice = json_decode($assocArrayFromFileData['filedata'], true);
+
+        $message = "Received message for invoice No.{$invoice['invoice_no']}";
         Log::getLog()->info($message);
         echo "-----\n";
         echo $message . "\n";
 
         GeneratePdf::generatePdf($msg->body);
         SendEmail::sendEmail();
-        $assocArrayFromFileData = (json_decode($msg->body, true))['filedata'];
-        $invoiceNo = (json_decode($assocArrayFromFileData, true))['invoiceNo'];
-        echo "Message No. " . $invoiceNo . " processed.\n";
+        echo "Invoice No." . $invoice['invoice_no'] . " processed.\n";
+        Log::getLog()->info('Invoice No.' . $invoice['invoice_no'] . " processed.");
         $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
     }
 
