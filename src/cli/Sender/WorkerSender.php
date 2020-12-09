@@ -8,8 +8,8 @@ use AYakovlev\cli\Rabbitmq;
 
 class WorkerSender extends Rabbitmq
 {
-    public function sendMessageToQueue(int $invoiceNum): void
+    public function sendMessageToQueue(string $data, string $template): void
     {
-        parent::sendMessageToQueue($invoiceNum);
+        parent::sendMessageToQueue($data, $template);
     }
 }

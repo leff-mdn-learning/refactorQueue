@@ -4,6 +4,8 @@
 namespace AYakovlev\cli;
 
 
+use AYakovlev\cli\Handler\GeneratePdf;
+use AYakovlev\cli\Handler\SendEmail;
 use Exception;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -30,10 +32,11 @@ class Rabbitmq implements iQueue
     }
 
     /**
-     * @param int $invoiceNum - номер накладной
+     * @param string $data - json-data for invoice
+     * @param string $template - template for invoice
      * @throws Exception
      */
-    public function sendMessageToQueue(int $invoiceNum): void
+    public function sendMessageToQueue(string $data, string $template): void
     {
         $channel = self::getConnection()->channel();
         $channel->queue_declare(
@@ -44,10 +47,11 @@ class Rabbitmq implements iQueue
             false
         );
 
-        $
+        $filedata = file_get_contents(__DIR__ . "/../../" . $data);
+        $data = array_merge(compact('data', $filedata), compact('template', $template));
 
         $msg = new AMQPMessage(
-            $invoiceNum,
+            json_encode($data),
             ['delivery_mode' => 2]  // сообщение постоянное
         );
 
@@ -57,7 +61,7 @@ class Rabbitmq implements iQueue
             'invoice_queue'
         );
 
-       Log::getLog()->info("Message No. {$invoiceNum} send to Queue");
+       Log::getLog()->info("Message No. {$data} send to Queue");
         $channel->close();
         Rabbitmq::getConnection()->close();
     }
@@ -71,13 +75,12 @@ class Rabbitmq implements iQueue
         Log::getLog()->info($message);
         echo "-----\n";
         echo $message . "\n";
-        $gf = new GeneratePdfController();
-        $se = new SendEmailController();
-        $gf->generatePdf();
-        $se->sendEmail();
-        echo "Message No. {$msg->body} processed.\n";
-        $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
 
+        GeneratePdf::generatePdf($msg->body);
+        SendEmail::sendEmail();
+        $invoiceNo = (json_decode((json_decode($msg->body, true))['data'], true))['invoiceNo'];
+        echo "Message No. " . $invoiceNo . " processed.\n";
+        $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
     }
 
     public function getMessageFromQueue()
