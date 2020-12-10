@@ -1,12 +1,13 @@
 <?php
 
 
-namespace AYakovlev\cli;
+namespace AYakovlev\cli\Controller;
 
 
 use AYakovlev\cli\Sender\WorkerSender;
+use AYakovlev\core\AbstractCommand;
 
-class Send extends AbstractCommand
+class SendController extends AbstractCommand
 {
     private WorkerSender $sender;
     public function __construct(array $params)
