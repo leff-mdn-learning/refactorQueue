@@ -6,7 +6,6 @@ namespace AYakovlev\cli;
 
 use AYakovlev\cli\Handler\GeneratePdf;
 use AYakovlev\cli\Handler\SendEmail;
-use AYakovlev\Log\Log;
 use Exception;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;

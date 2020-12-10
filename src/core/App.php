@@ -20,7 +20,7 @@ class App
             throw new CliException('Контроллер "' . $controllerName . '" не найден');
         }
 
-        // распарсить праметры cli в ассоц. массив
+        // распарсить праметры cli в ассоц. массив $params
         $params = [];
         foreach ($argv as $argument) {
             preg_match('/^-(.+)=(.+)$/', $argument, $matches);

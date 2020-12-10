@@ -1,7 +1,7 @@
 <?php
 
 
-namespace AYakovlev\Log;
+namespace AYakovlev\cli;
 
 
 use Monolog\Handler\StreamHandler;

@@ -7,7 +7,7 @@ namespace AYakovlev\cli\Controller;
 use AYakovlev\cli\Receiver\WorkerReceiver;
 use AYakovlev\core\AbstractCommand;
 
-class ReceiveController extends AbstractCommand
+class Receive extends AbstractCommand
 {
     private WorkerReceiver $receiver;
 
