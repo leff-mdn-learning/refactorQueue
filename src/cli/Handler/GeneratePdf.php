@@ -4,8 +4,7 @@
 namespace AYakovlev\cli\Handler;
 
 
-use AYakovlev\cli\Log;
-
+use AYakovlev\Log\Log;
 
 class GeneratePdf
 {

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace AYakovlev\cli;
+namespace AYakovlev\core;
 
 
 use AYakovlev\Exception\CliException;
